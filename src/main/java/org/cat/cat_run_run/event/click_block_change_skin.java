@@ -10,6 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.cat.cat_run_run.Cat_run_run;
 
 import static org.cat.cat_run_run.event.Skin_changer.setPlayerSkinPaper;
+import static org.cat.cat_run_run.event.cooldown_manager.isOnCooldown;
+import static org.cat.cat_run_run.event.cooldown_manager.setCooldown;
 
 public class click_block_change_skin implements Listener {
 
@@ -69,5 +71,9 @@ public class click_block_change_skin implements Listener {
                             "GmmkFymrmmPzzrtTtI6IO0Vh50UwkYtQ7ArJ6fMKsh3IkFiNcauDlDAhYvuv8/xrnVFCAtv3Gmf+qfkt5oV/0ristdAxuQ2ermmUKVg6elJpUPd2MnQy9OUEqIqnxrNPq3Fw6FEQxt2o0jBTltYeIaFveK10mV84bMaoDHvvhm3XqG1WMeenPU9az+1KC4rrJK85Ab3MGbLhgBqYUZIoajHUIu3PNtW/HzzGhucxdIr/9yUhLXaJbQ0n6yAL5U7zV0uM377Ubgek6sc/SSYvSIpO8jpi572k9tkyF+0y6fiHdzL9hEYO4QsHFteOyDjhWlAVJ29NyYkfYFWwdLV8+6rPpOfEI/5wFEzHB6eFT+SHnr/+GO2fCX9cSh56eob5xoo7ReEi8zxTGGl9AjNEmF0f4BVz0ziwZuR1Ptk7g55XbfhJi/4Ma0O9HguTQOAbQmOiU0/qOS/JGGxwxrE0fWJu5gvo/5JYEWVpXQqCWGxm14/zWY2cDhCbffdpNVIcPrj9mRNSaD/u3D4SFuyJPAW6TYSYHYCqEn7C7QzGP2Vdu6okCuHMLVp9dAoY+dCVpPKBNwq8xyM7LrPWFDAl7atsC9vXyqveIvROoiqQzZoWcIjBe5GGac4DTZ0aJjeimvHfllQXcWd/vsAVC+mTXDxFmxKJiu3+KMQAKF7Yzrc=");
             }
     }
+        if(!isOnCooldown(player)){
+             setCooldown(player);
+        }
     }
+
 }

@@ -2,6 +2,7 @@ package org.cat.cat_run_run.event;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,6 +13,8 @@ import org.cat.cat_run_run.Cat_run_run;
 import java.util.Set;
 
 import static org.cat.cat_run_run.event.assign_wool_on_join.assignwool;
+import static org.cat.cat_run_run.event.cooldown_manager.getRemainingSeconds;
+import static org.cat.cat_run_run.event.cooldown_manager.isOnCooldown;
 
 public class Skin_changer implements Listener {
     private final Cat_run_run plugin;
@@ -26,6 +29,11 @@ public class Skin_changer implements Listener {
     }
 
     public static void setPlayerSkinPaper(Player player, String skinValue, String skinSignature){
+
+        if(isOnCooldown(player)){
+            player.sendMessage(ChatColor.RED+"cooldown still remain " + getRemainingSeconds(player)+ " s");
+            return;
+        }
         // Get the player's profile
         PlayerProfile profile = player.getPlayerProfile();
 
