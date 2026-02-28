@@ -16,7 +16,7 @@ public class scoreboard {
 
         // Register objective with a Title
         Objective obj = board.registerNewObjective("game_info", Criteria.DUMMY,
-                Component.text("顔色躲貓貓test", NamedTextColor.GOLD));
+                Component.text("測試測試測試", NamedTextColor.GOLD));
 
         obj.setDisplaySlot(DisplaySlot.SIDEBAR);
         player.setScoreboard(board);
@@ -40,7 +40,7 @@ public class scoreboard {
 
             // Line 3: Time
             String timeLine = serializer.serialize(Component.text("游戲進行時間:  ", NamedTextColor.WHITE)
-                    .append(Component.text(gameTime, NamedTextColor.GREEN)));
+                    .append(Component.text(gameTime+ "s", NamedTextColor.GREEN)));
             obj.getScore(timeLine).setScore(0);
 
             // Line 2: Cooldown

@@ -12,7 +12,8 @@ import org.cat.cat_run_run.Cat_run_run;
 import static org.cat.cat_run_run.event.Skin_changer.setPlayerSkinPaper;
 import static org.cat.cat_run_run.event.cooldown_manager.isOnCooldown;
 import static org.cat.cat_run_run.event.cooldown_manager.setCooldown;
-import static org.cat.cat_run_run.variable.variable.gameStarted;
+
+import static org.cat.cat_run_run.variable.variable.games_session;
 
 public class click_block_change_skin implements Listener {
 
@@ -24,10 +25,11 @@ public class click_block_change_skin implements Listener {
 
     @EventHandler
     public void onPlayerRightClick(PlayerInteractEvent event) {
-        Player player = event.getPlayer();
-        if (!gameStarted) {
+        if (games_session <= 2) {
             return;
         }
+        Player player = event.getPlayer();
+
         // Only check main hand (right hand)
         if (event.getHand() == EquipmentSlot.HAND) {
             ItemStack mainHand = event.getItem();
@@ -49,6 +51,9 @@ public class click_block_change_skin implements Listener {
                     else if (mainHand.getType() ==Material.GREEN_WOOL)
                         setPlayerSkinPaper(event.getPlayer(), "ewogICJ0aW1lc3RhbXAiIDogMTcyNjM0MDc3OTcyMiwKICAicHJvZmlsZUlkIiA6ICI4YmM3MjdlYThjZjA0YWUzYTI4MDVhY2YzNjRjMmQyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJub3RpbnZlbnRpdmUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y2ZGI4MzI2YmU2NDMxODI4ZDgzM2U1MzkyZDY5YWM3MmVkM2QxMWZhNTdjNWM3MTljMTMwZTg2ODczY2NmZiIKICAgIH0KICB9Cn0=",
                                 "GmmkFymrmmPzzrtTtI6IO0Vh50UwkYtQ7ArJ6fMKsh3IkFiNcauDlDAhYvuv8/xrnVFCAtv3Gmf+qfkt5oV/0ristdAxuQ2ermmUKVg6elJpUPd2MnQy9OUEqIqnxrNPq3Fw6FEQxt2o0jBTltYeIaFveK10mV84bMaoDHvvhm3XqG1WMeenPU9az+1KC4rrJK85Ab3MGbLhgBqYUZIoajHUIu3PNtW/HzzGhucxdIr/9yUhLXaJbQ0n6yAL5U7zV0uM377Ubgek6sc/SSYvSIpO8jpi572k9tkyF+0y6fiHdzL9hEYO4QsHFteOyDjhWlAVJ29NyYkfYFWwdLV8+6rPpOfEI/5wFEzHB6eFT+SHnr/+GO2fCX9cSh56eob5xoo7ReEi8zxTGGl9AjNEmF0f4BVz0ziwZuR1Ptk7g55XbfhJi/4Ma0O9HguTQOAbQmOiU0/qOS/JGGxwxrE0fWJu5gvo/5JYEWVpXQqCWGxm14/zWY2cDhCbffdpNVIcPrj9mRNSaD/u3D4SFuyJPAW6TYSYHYCqEn7C7QzGP2Vdu6okCuHMLVp9dAoY+dCVpPKBNwq8xyM7LrPWFDAl7atsC9vXyqveIvROoiqQzZoWcIjBe5GGac4DTZ0aJjeimvHfllQXcWd/vsAVC+mTXDxFmxKJiu3+KMQAKF7Yzrc=");
+                    }
+                    if(!isOnCooldown(player)){
+                        setCooldown(player);
                     }
 
                 }
@@ -72,11 +77,12 @@ public class click_block_change_skin implements Listener {
                 else if (offHand.getType() ==Material.GREEN_WOOL)
                     setPlayerSkinPaper(event.getPlayer(), "ewogICJ0aW1lc3RhbXAiIDogMTcyNjM0MDc3OTcyMiwKICAicHJvZmlsZUlkIiA6ICI4YmM3MjdlYThjZjA0YWUzYTI4MDVhY2YzNjRjMmQyNCIsCiAgInByb2ZpbGVOYW1lIiA6ICJub3RpbnZlbnRpdmUiLAogICJzaWduYXR1cmVSZXF1aXJlZCIgOiB0cnVlLAogICJ0ZXh0dXJlcyIgOiB7CiAgICAiU0tJTiIgOiB7CiAgICAgICJ1cmwiIDogImh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvN2Y2ZGI4MzI2YmU2NDMxODI4ZDgzM2U1MzkyZDY5YWM3MmVkM2QxMWZhNTdjNWM3MTljMTMwZTg2ODczY2NmZiIKICAgIH0KICB9Cn0=",
                             "GmmkFymrmmPzzrtTtI6IO0Vh50UwkYtQ7ArJ6fMKsh3IkFiNcauDlDAhYvuv8/xrnVFCAtv3Gmf+qfkt5oV/0ristdAxuQ2ermmUKVg6elJpUPd2MnQy9OUEqIqnxrNPq3Fw6FEQxt2o0jBTltYeIaFveK10mV84bMaoDHvvhm3XqG1WMeenPU9az+1KC4rrJK85Ab3MGbLhgBqYUZIoajHUIu3PNtW/HzzGhucxdIr/9yUhLXaJbQ0n6yAL5U7zV0uM377Ubgek6sc/SSYvSIpO8jpi572k9tkyF+0y6fiHdzL9hEYO4QsHFteOyDjhWlAVJ29NyYkfYFWwdLV8+6rPpOfEI/5wFEzHB6eFT+SHnr/+GO2fCX9cSh56eob5xoo7ReEi8zxTGGl9AjNEmF0f4BVz0ziwZuR1Ptk7g55XbfhJi/4Ma0O9HguTQOAbQmOiU0/qOS/JGGxwxrE0fWJu5gvo/5JYEWVpXQqCWGxm14/zWY2cDhCbffdpNVIcPrj9mRNSaD/u3D4SFuyJPAW6TYSYHYCqEn7C7QzGP2Vdu6okCuHMLVp9dAoY+dCVpPKBNwq8xyM7LrPWFDAl7atsC9vXyqveIvROoiqQzZoWcIjBe5GGac4DTZ0aJjeimvHfllQXcWd/vsAVC+mTXDxFmxKJiu3+KMQAKF7Yzrc=");
+                if(!isOnCooldown(player)){
+                    setCooldown(player);
+                }
             }
     }
-        if(!isOnCooldown(player)){
-             setCooldown(player);
-        }
+
     }
 
 }

@@ -1,5 +1,6 @@
 package org.cat.cat_run_run.event;
 
+import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -18,6 +19,9 @@ public class player_join_event implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if(!event.getPlayer().isOp()){
+        event.getPlayer().setGameMode(GameMode.ADVENTURE);
+        }
         scoreboard.setup(event.getPlayer());
     }
 }

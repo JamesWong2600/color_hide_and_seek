@@ -4,3 +4,4 @@ main: org.cat.cat_run_run.Cat_run_run
 api-version: '1.21'
 commands:
   start:
+  hunter:

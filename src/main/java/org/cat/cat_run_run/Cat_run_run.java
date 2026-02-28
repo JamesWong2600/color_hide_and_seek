@@ -4,56 +4,118 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
+import org.bukkit.FireworkEffect;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.cat.cat_run_run.command.HunterCommand;
 import org.cat.cat_run_run.command.start;
 import org.cat.cat_run_run.event.*;
 import org.cat.cat_run_run.scoreboard.scoreboard;
 import org.cat.cat_run_run.variable.variable;
 
+import java.io.File;
+
+import static org.cat.cat_run_run.data_processing.flush.flusher;
+import static org.cat.cat_run_run.data_processing.hunter_manager.isHunter;
+import static org.cat.cat_run_run.data_processing.hunter_manager.loadHunters;
+import static org.cat.cat_run_run.event.assign_skin_on_start.assignskin;
+import static org.cat.cat_run_run.event.assign_sword_to_hunter.assignsword;
 import static org.cat.cat_run_run.event.assign_wool_on_join.assignwool;
 import static org.cat.cat_run_run.event.cooldown_manager.getRemainingSeconds;
-import static org.cat.cat_run_run.variable.variable.delay_cooldown;
-import static org.cat.cat_run_run.variable.variable.gameStarted;
+import static org.cat.cat_run_run.event.fire_work_while_end.spawn_firework;
+import static org.cat.cat_run_run.variable.variable.*;
 
 public final class Cat_run_run extends JavaPlugin {
     private cooldown_manager cooldown_manager;
 
     @Override
     public void onEnable() {
+        if (!getDataFolder().exists()) {
+            getDataFolder().mkdirs();
+        }
+        File file = new File(getDataFolder(), "hunters.json");
+        if (!file.exists()) {
+            saveResource("hunters.json", false);
+        }
+        loadHunters(getDataFolder());
+        flusher(this, getDataFolder());
         getServer().getPluginManager().registerEvents(new player_join_event(this), this);
         getServer().getPluginManager().registerEvents(new drop_item(this), this);
         getServer().getPluginManager().registerEvents(new click_block_change_skin(this), this);
+        getServer().getPluginManager().registerEvents(new dead_event(this), this);
+        getServer().getPluginManager().registerEvents(new prevent_place_block(this), this);
+        getServer().getPluginManager().registerEvents(new prevent_pvp(this), this);
         getCommand("start").setExecutor(new start(this));
+        getCommand("hunter").setExecutor(new HunterCommand(this));
 
 
-        Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (Player player : Bukkit.getOnlinePlayers()) {
-                if (gameStarted) {
-                    if(delay_cooldown >= 0){
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (games_session == 1) {
+                    if (delay_cooldown >= 0) {
                         Component titleText = Component.text(delay_cooldown)
                                 .color(NamedTextColor.WHITE);
-                        player.showTitle(Title.title(titleText, Component.text("")));
+                        for (Player player : Bukkit.getOnlinePlayers()) {
+                            player.showTitle(Title.title(titleText, Component.text("")));
+                        }
                         delay_cooldown--;
-                        if(delay_cooldown == 0){
+                        if (delay_cooldown == 0) {
+                            games_session = 3;
+                            Bukkit.broadcast(net.kyori.adventure.text.Component.text("§a比賽已開始"));
                             Component Ready_text = Component.text("游戲開始")
                                     .color(NamedTextColor.WHITE);
-                            player.showTitle(Title.title(Ready_text, Component.text("")));
-                            assignwool(player);
+                            for (Player player : Bukkit.getOnlinePlayers()) {
+                                player.showTitle(Title.title(Ready_text, Component.text("")));
+
+
+                            }
+                            for (Player assign_skin_player : Bukkit.getOnlinePlayers()) {
+                                if (!isHunter(assign_skin_player.getUniqueId().toString())){
+                                  assignwool(assign_skin_player);
+                                  assignskin(assign_skin_player);
+                                }else{
+                                    assignsword(assign_skin_player);
+                                }
+                            }
                         }
-                    }else{
-                        variable.secondsElapsed++;
                     }
+                } else if (games_session == 3) {
+                    variable.secondsElapsed++;
                 }
                 String time = String.valueOf(variable.secondsElapsed);
-                int cd = (int) getRemainingSeconds(player);
-                int remaining = Bukkit.getOnlinePlayers().size();
+                int remaining = (int) Bukkit.getOnlinePlayers().stream()
+                        .filter(players -> players.getGameMode() == GameMode.ADVENTURE)
+                        .count();
+                if (remaining <= 1 && games_session == 3) {
+                    String winnerName = Bukkit.getOnlinePlayers().stream()
+                            .filter(p -> p.getGameMode() == GameMode.ADVENTURE)
+                            .map(Player::getName) // Convert Player object to String (Name)
+                            .findFirst()          // Get the first one found
+                            .orElse("None");
+                    for (Player player : Bukkit.getOnlinePlayers()) {
+                        Component Winner_text = Component.text("最終贏家: " + winnerName)
+                                .color(NamedTextColor.GREEN);
+                        player.showTitle(Title.title(Winner_text, Component.text("")));
+                        spawn_firework(player);
+                    }
+                    this.cancel();
 
-                // Call the static update method
-                scoreboard.update(player, time, cd, remaining);
-            }
-        }, 0L, 20L); // 20 ticks = 1 second
+                }
 
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    // Call the static update method
+                    int cd = (int) getRemainingSeconds(player);
+                    scoreboard.update(player, time, cd, remaining);
+                }
+            }}.
+
+            runTaskTimer(this,0L,20L);
         cooldown_manager = new cooldown_manager(this);
     }
 
