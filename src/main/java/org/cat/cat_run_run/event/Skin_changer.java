@@ -9,6 +9,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cat.cat_run_run.Cat_run_run;
+import org.cat.cat_run_run.scoreboard.scoreboard;
 
 import java.util.Set;
 
@@ -16,17 +17,7 @@ import static org.cat.cat_run_run.event.assign_wool_on_join.assignwool;
 import static org.cat.cat_run_run.event.cooldown_manager.getRemainingSeconds;
 import static org.cat.cat_run_run.event.cooldown_manager.isOnCooldown;
 
-public class Skin_changer implements Listener {
-    private final Cat_run_run plugin;
-
-    public Skin_changer(Cat_run_run plugin) {
-        this.plugin = plugin;
-    }
-
-    @EventHandler
-    public void onPlayerJoin(PlayerJoinEvent event) {
-        assignwool(event.getPlayer());
-    }
+public class Skin_changer {
 
     public static void setPlayerSkinPaper(Player player, String skinValue, String skinSignature){
 

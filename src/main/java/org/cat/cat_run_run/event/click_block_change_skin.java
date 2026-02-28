@@ -12,6 +12,7 @@ import org.cat.cat_run_run.Cat_run_run;
 import static org.cat.cat_run_run.event.Skin_changer.setPlayerSkinPaper;
 import static org.cat.cat_run_run.event.cooldown_manager.isOnCooldown;
 import static org.cat.cat_run_run.event.cooldown_manager.setCooldown;
+import static org.cat.cat_run_run.variable.variable.gameStarted;
 
 public class click_block_change_skin implements Listener {
 
@@ -24,7 +25,9 @@ public class click_block_change_skin implements Listener {
     @EventHandler
     public void onPlayerRightClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-
+        if (!gameStarted) {
+            return;
+        }
         // Only check main hand (right hand)
         if (event.getHand() == EquipmentSlot.HAND) {
             ItemStack mainHand = event.getItem();

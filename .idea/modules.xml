@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/cat_run_run.main.iml" filepath="$PROJECT_DIR$/.idea/modules/cat_run_run.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/org.cat.cat_run_run.main.iml" filepath="$PROJECT_DIR$/.idea/modules/org.cat.cat_run_run.main.iml" />
     </modules>
   </component>
 </project>
