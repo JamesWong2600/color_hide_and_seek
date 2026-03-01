@@ -24,6 +24,7 @@ public class assign_sword_to_hunter {
         // 2. Create the Shears (assuming you want these for the game)
         ItemStack shears = new ItemStack(Material.SHEARS);
         ItemMeta shearMeta = shears.getItemMeta();
+        swordMeta.addEnchant(Enchantment.EFFICIENCY, 10, true);
         shearMeta.displayName(Component.text("§6§l剪羊毛工具").decoration(TextDecoration.ITALIC, false));
         shearMeta.setUnbreakable(true);
         shears.setItemMeta(shearMeta);

@@ -10,9 +10,9 @@ public class assign_wool_on_join {
         PlayerInventory inv = player.getInventory();
 
         // Set different colored wool in slots 0-3
-        inv.setItem(0, new ItemStack(Material.YELLOW_WOOL));
-        inv.setItem(1, new ItemStack(Material.RED_WOOL));
-        inv.setItem(2, new ItemStack(Material.BLUE_WOOL));
-        inv.setItem(3, new ItemStack(Material.GREEN_WOOL));
+        inv.setItem(0, new ItemStack(Material.GOLD_BLOCK));
+        inv.setItem(1, new ItemStack(Material.REDSTONE_BLOCK));
+        inv.setItem(2, new ItemStack(Material.LAPIS_BLOCK));
+        inv.setItem(3, new ItemStack(Material.EMERALD_BLOCK));
     }
 }

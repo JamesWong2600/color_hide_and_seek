@@ -13,14 +13,14 @@ public class init_world_wool {
     public static void generateSmoothly(JavaPlugin plugin) {
         new BukkitRunnable() {
 
-            int x = -200;
+            int x = -100;
             final World world = Bukkit.getWorld("world");
 
             @Override
             public void run() {
                 setupWorldBorder(world);
                 // Process one full X-slice per tick
-                for (int z = -200; z <= 200; z++) {
+                for (int z = -100; z <= 100; z++) {
 
                     Material color = getQuadrantColor(x, z);
                     assert world != null;
@@ -33,7 +33,7 @@ public class init_world_wool {
                 }
 
                 x++;
-                if (x > 200) {
+                if (x > 100) {
                     this.cancel();
                     Bukkit.broadcast(Component.text("Generation Finished!"));
                 }
@@ -54,7 +54,7 @@ public class init_world_wool {
 
         // 2. Set the Size (diameter)
         // If your radius is 200, your diameter (size) is 400
-        border.setSize(400.0);
+        border.setSize(200.0);
 
         // 3. Optional: Set a warning
         border.setWarningDistance(5); // Red tint starts 5 blocks away

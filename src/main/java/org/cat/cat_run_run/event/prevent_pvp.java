@@ -12,6 +12,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.cat.cat_run_run.Cat_run_run;
 
+import static org.cat.cat_run_run.data_processing.hunter_manager.isHunter;
 import static org.cat.cat_run_run.variable.variable.games_session;
 
 public class prevent_pvp implements Listener {
@@ -24,15 +25,25 @@ public class prevent_pvp implements Listener {
     @EventHandler
     public void onPlayerPVP(EntityDamageByEntityEvent event){
         int remaining = (int) Bukkit.getOnlinePlayers().stream()
-                .filter(players -> players.getGameMode() == GameMode.ADVENTURE)
+                .filter(players -> players.getGameMode() == GameMode.SURVIVAL &&
+                        (!isHunter(event.getEntity().getUniqueId().toString()) ||
+                                !isHunter(event.getDamager().getUniqueId().toString())))
                 .count();
         if(remaining == 1){
             event.setCancelled(true);
         }
-        if(games_session < 3){
+        if(games_session != 3){
             event.setCancelled(true);
         }
-        if(event.getDamager() instanceof Player && !event.getDamager().isOp()){
+        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
+                isHunter(event.getEntity().getUniqueId().toString()) &&
+                !isHunter(event.getDamager().getUniqueId().toString())){
+            event.setCancelled(true);
+        }
+
+        if(event.getDamager() instanceof Player && event.getEntity() instanceof Player &&
+                isHunter(event.getEntity().getUniqueId().toString()) &&
+                isHunter(event.getDamager().getUniqueId().toString())){
             event.setCancelled(true);
         }
     }

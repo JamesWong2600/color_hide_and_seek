@@ -5,6 +5,8 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
+import org.bukkit.GameRule;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -47,7 +49,7 @@ public final class Cat_run_run extends JavaPlugin {
         }
         loadColors(getDataFolder());
 
-        loadHunters(getDataFolder());
+        loadHunters(getDataFolder(), getLogger());
         flusher(this, getDataFolder());
         getServer().getPluginManager().registerEvents(new player_join_event(this), this);
         getServer().getPluginManager().registerEvents(new drop_item(this), this);
@@ -61,6 +63,11 @@ public final class Cat_run_run extends JavaPlugin {
         getCommand("start").setExecutor(new start(this));
         getCommand("hunter").setExecutor(new HunterCommand(this));
         generateSmoothly(this);
+        World world = Bukkit.getWorld("world"); // Replace with your world name
+        if (world != null) {
+            world.setGameRule(GameRule.KEEP_INVENTORY, true);
+            world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
+        }
 
         new BukkitRunnable() {
             @Override
@@ -97,13 +104,20 @@ public final class Cat_run_run extends JavaPlugin {
                     variable.secondsElapsed++;
                 }
                 String time = String.valueOf(variable.secondsElapsed);
-                int remaining = (int) Bukkit.getOnlinePlayers().stream()
-                        .filter(players -> players.getGameMode() == GameMode.ADVENTURE)
+                int remaining = 0;
+                if(games_session == 3){
+                    remaining = (int) Bukkit.getOnlinePlayers().stream()
+                        .filter(players -> players.getGameMode() == GameMode.SURVIVAL && !isHunter(players.getUniqueId().toString()))
                         .count();
+                }else{
+                    remaining = (int) Bukkit.getOnlinePlayers().stream()
+                            .filter(players -> players.getGameMode() == GameMode.ADVENTURE && !isHunter(players.getUniqueId().toString()))
+                            .count();
+                }
                 if (remaining <= 1 && games_session == 3) {
 
                     String winnerName = Bukkit.getOnlinePlayers().stream()
-                            .filter(p -> p.getGameMode() == GameMode.ADVENTURE)
+                            .filter(p -> p.getGameMode() == GameMode.SURVIVAL && !isHunter(p.getUniqueId().toString()))
                             .map(Player::getName) // Convert Player object to String (Name)
                             .findFirst()          // Get the first one found
                             .orElse("None");

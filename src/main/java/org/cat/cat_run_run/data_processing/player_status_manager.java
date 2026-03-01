@@ -1,9 +1,6 @@
 package org.cat.cat_run_run.data_processing;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.bukkit.entity.Player;
 import org.eclipse.aether.util.FileUtils;
 
@@ -23,16 +20,25 @@ public class player_status_manager {
         if (!file.exists()) return;
 
         try (FileReader reader = new FileReader(file)) {
-            JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
+            JsonElement element = JsonParser.parseReader(reader);
+
+            // CHECK: If file is empty or null, stop here
+            if (element == null || element.isJsonNull() || !element.isJsonObject()) {
+                System.out.println("[Colors] player_colors.json is empty or invalid. Skipping load.");
+                return;
+            }
+
+            JsonObject json = element.getAsJsonObject();
             if (json.has("colors")) {
                 JsonObject colorsObj = json.getAsJsonObject("colors");
                 playerColors.clear();
-                // Load each UUID and its corresponding color
                 for (String uuid : colorsObj.keySet()) {
                     playerColors.put(uuid, colorsObj.get(uuid).getAsString());
                 }
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static void setPlayerColor(Player player, String colorName, File dataFolder) {

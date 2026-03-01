@@ -12,22 +12,20 @@ import org.cat.cat_run_run.Cat_run_run;
 import org.cat.cat_run_run.variable.variable;
 import org.jetbrains.annotations.NotNull;
 
-
 import static org.cat.cat_run_run.data_processing.hunter_manager.isHunter;
 import static org.cat.cat_run_run.event.random_teleport.teleportall;
 import static org.cat.cat_run_run.variable.variable.games_session;
 
-public class start implements CommandExecutor {
-
+public class continue_game implements CommandExecutor {
     private final Cat_run_run plugin;
 
-    public start(Cat_run_run plugin) {
+    public continue_game(Cat_run_run plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (label.equalsIgnoreCase("start")) {
+        if (label.equalsIgnoreCase("continue")) {
             if(!sender.isOp()){
                 sender.sendMessage("§c你不是管理員，無法啓動");
                 return false;

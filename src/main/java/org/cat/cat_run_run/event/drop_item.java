@@ -17,10 +17,10 @@ public class drop_item implements Listener {
     @EventHandler
     public void onPlayerDropWool(PlayerDropItemEvent event){
         Item item = event.getItemDrop();
-        if(item.equals(Material.WHITE_WOOL) ||
-            item.equals(Material.RED_WOOL) ||
-                item.equals(Material.BLUE_WOOL)||
-                item.equals(Material.GREEN_WOOL) ){
+        if(item.equals(Material.GOLD_BLOCK) ||
+            item.equals(Material.REDSTONE_BLOCK) ||
+                item.equals(Material.LAPIS_BLOCK)||
+                item.equals(Material.EMERALD_BLOCK) ){
             event.setCancelled(true);
         }
     }
