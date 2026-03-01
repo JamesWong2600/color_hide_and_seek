@@ -4,12 +4,8 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
-import org.bukkit.FireworkEffect;
 import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.FireworkMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.cat.cat_run_run.command.HunterCommand;
@@ -23,11 +19,13 @@ import java.io.File;
 import static org.cat.cat_run_run.data_processing.flush.flusher;
 import static org.cat.cat_run_run.data_processing.hunter_manager.isHunter;
 import static org.cat.cat_run_run.data_processing.hunter_manager.loadHunters;
+import static org.cat.cat_run_run.data_processing.player_status_manager.loadColors;
 import static org.cat.cat_run_run.event.assign_skin_on_start.assignskin;
-import static org.cat.cat_run_run.event.assign_sword_to_hunter.assignsword;
+import static org.cat.cat_run_run.event.assign_sword_to_hunter.assignHunterLoadout;
 import static org.cat.cat_run_run.event.assign_wool_on_join.assignwool;
 import static org.cat.cat_run_run.event.cooldown_manager.getRemainingSeconds;
 import static org.cat.cat_run_run.event.fire_work_while_end.spawn_firework;
+import static org.cat.cat_run_run.init.init_world_wool.generateSmoothly;
 import static org.cat.cat_run_run.variable.variable.*;
 
 public final class Cat_run_run extends JavaPlugin {
@@ -38,10 +36,17 @@ public final class Cat_run_run extends JavaPlugin {
         if (!getDataFolder().exists()) {
             getDataFolder().mkdirs();
         }
-        File file = new File(getDataFolder(), "hunters.json");
-        if (!file.exists()) {
+        File hunter_file = new File(getDataFolder(), "hunters.json");
+        if (!hunter_file.exists()) {
             saveResource("hunters.json", false);
         }
+
+        File player_color_file = new File(getDataFolder(), "player_colors.json");
+        if (!player_color_file.exists()) {
+            saveResource("player_colors.json", false);
+        }
+        loadColors(getDataFolder());
+
         loadHunters(getDataFolder());
         flusher(this, getDataFolder());
         getServer().getPluginManager().registerEvents(new player_join_event(this), this);
@@ -50,9 +55,12 @@ public final class Cat_run_run extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new dead_event(this), this);
         getServer().getPluginManager().registerEvents(new prevent_place_block(this), this);
         getServer().getPluginManager().registerEvents(new prevent_pvp(this), this);
+        getServer().getPluginManager().registerEvents(new disable_fall_damage(this), this);
+        getServer().getPluginManager().registerEvents(new freeze_hunter_on_countdown(this), this);
+
         getCommand("start").setExecutor(new start(this));
         getCommand("hunter").setExecutor(new HunterCommand(this));
-
+        generateSmoothly(this);
 
         new BukkitRunnable() {
             @Override
@@ -78,9 +86,9 @@ public final class Cat_run_run extends JavaPlugin {
                             for (Player assign_skin_player : Bukkit.getOnlinePlayers()) {
                                 if (!isHunter(assign_skin_player.getUniqueId().toString())){
                                   assignwool(assign_skin_player);
-                                  assignskin(assign_skin_player);
+                                  assignskin(assign_skin_player, Cat_run_run.this);
                                 }else{
-                                    assignsword(assign_skin_player);
+                                    assignHunterLoadout(assign_skin_player);
                                 }
                             }
                         }
@@ -93,6 +101,7 @@ public final class Cat_run_run extends JavaPlugin {
                         .filter(players -> players.getGameMode() == GameMode.ADVENTURE)
                         .count();
                 if (remaining <= 1 && games_session == 3) {
+
                     String winnerName = Bukkit.getOnlinePlayers().stream()
                             .filter(p -> p.getGameMode() == GameMode.ADVENTURE)
                             .map(Player::getName) // Convert Player object to String (Name)
@@ -104,6 +113,7 @@ public final class Cat_run_run extends JavaPlugin {
                         player.showTitle(Title.title(Winner_text, Component.text("")));
                         spawn_firework(player);
                     }
+                    games_session = 4;
                     this.cancel();
 
                 }

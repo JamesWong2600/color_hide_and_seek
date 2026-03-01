@@ -12,6 +12,7 @@ public class flush {
     public static void flusher(JavaPlugin plugin, File dataFolder){
         Bukkit.getScheduler().runTaskTimer(plugin, () -> {
             hunter_manager.save(dataFolder);
+            player_status_manager.save(dataFolder);
             getLogger().info("Hunters data flushed to JSON.");
         }, 200L, 200L);
 }}

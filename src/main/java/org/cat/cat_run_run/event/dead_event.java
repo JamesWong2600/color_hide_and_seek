@@ -6,6 +6,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.cat.cat_run_run.Cat_run_run;
 
 import static org.cat.cat_run_run.variable.variable.games_session;
@@ -26,6 +28,7 @@ public class dead_event implements Listener {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 event.getPlayer().spigot().respawn();
                 event.getPlayer().setGameMode(GameMode.SPECTATOR);
+                event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
             }, 1L);
         }
     }

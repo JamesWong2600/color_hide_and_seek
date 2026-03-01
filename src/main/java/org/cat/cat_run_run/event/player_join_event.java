@@ -4,6 +4,8 @@ import org.bukkit.GameMode;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.cat.cat_run_run.Cat_run_run;
 import org.cat.cat_run_run.scoreboard.scoreboard;
 
@@ -23,5 +25,6 @@ public class player_join_event implements Listener {
         event.getPlayer().setGameMode(GameMode.ADVENTURE);
         }
         scoreboard.setup(event.getPlayer());
+        event.getPlayer().addPotionEffect(new PotionEffect(PotionEffectType.NIGHT_VISION, 999999999, 10));
     }
 }

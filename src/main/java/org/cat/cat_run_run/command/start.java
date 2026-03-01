@@ -1,6 +1,7 @@
 package org.cat.cat_run_run.command;
 
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -37,6 +38,7 @@ public class start implements CommandExecutor {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 if(isHunter(player.getUniqueId().toString())) {
                     player.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 600, 10));
+                    player.getPlayer().setGameMode(GameMode.SURVIVAL);
                 }
             }
             games_session = 1;

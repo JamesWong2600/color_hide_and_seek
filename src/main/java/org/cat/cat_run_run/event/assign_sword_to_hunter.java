@@ -11,21 +11,32 @@ import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 
 public class assign_sword_to_hunter {
-    public static void assignsword(Player player){
+    public static void assignHunterLoadout(Player player) {
+        // 1. Create the Sword
         ItemStack sword = new ItemStack(Material.NETHERITE_SWORD);
-        ItemMeta meta = sword.getItemMeta();
+        ItemMeta swordMeta = sword.getItemMeta();
+        swordMeta.displayName(Component.text("§4§l死神之劍").decoration(TextDecoration.ITALIC, false));
+        swordMeta.addEnchant(Enchantment.SHARPNESS, 255, true);
+        swordMeta.setUnbreakable(true);
+        swordMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        sword.setItemMeta(swordMeta);
 
-        meta.displayName(Component.text("§4§l死神之劍")
-                .decoration(TextDecoration.ITALIC, false));
+        // 2. Create the Shears (assuming you want these for the game)
+        ItemStack shears = new ItemStack(Material.SHEARS);
+        ItemMeta shearMeta = shears.getItemMeta();
+        shearMeta.displayName(Component.text("§6§l剪羊毛工具").decoration(TextDecoration.ITALIC, false));
+        shearMeta.setUnbreakable(true);
+        shears.setItemMeta(shearMeta);
 
-        // Sharpness 255 is the maximum possible level in Minecraft
-        meta.addEnchant(Enchantment.SHARPNESS, 255, true);
+        // 3. Assign to specific slots
+        // setItem(0, ...) is the FIRST slot
+        player.getInventory().setItem(0, sword);
 
-        // Make it look clean
-        meta.setUnbreakable(true);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        // setItem(1, ...) is the SECOND slot
+        player.getInventory().setItem(1, shears);
 
-        sword.setItemMeta(meta);
-        player.getInventory().addItem(sword);
+        // Optional: Force the player to hold the sword immediately
+        player.getInventory().setHeldItemSlot(0);
     }
+
 }
